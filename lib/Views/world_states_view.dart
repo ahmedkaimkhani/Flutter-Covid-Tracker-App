@@ -1,3 +1,5 @@
+import 'package:covid_tracker/Models/world_states_model.dart';
+import 'package:covid_tracker/Services/state_services.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
@@ -28,6 +30,8 @@ class _WorldStatesViewState extends State<WorldStatesView>
 
   @override
   Widget build(BuildContext context) {
+    StateServices stateServices = StateServices();
+
     return Scaffold(
       body: SafeArea(
           child: Padding(
@@ -37,6 +41,18 @@ class _WorldStatesViewState extends State<WorldStatesView>
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
+            FutureBuilder(
+                future: stateServices.getWorldStatesRecord(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<WorldStatesModel> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Expanded(
+                      flex: 1,
+                      child: Column(),
+                    );
+                  } else {}
+                  return Column();
+                }),
             PieChart(
               dataMap: const {'Total': 20, 'Recoverd': 15, 'Deaths': 5},
               animationDuration: const Duration(milliseconds: 1200),
