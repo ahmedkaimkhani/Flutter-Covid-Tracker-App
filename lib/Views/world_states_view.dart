@@ -17,6 +17,8 @@ class _WorldStatesViewState extends State<WorldStatesView>
       AnimationController(duration: const Duration(seconds: 3), vsync: this)
         ..repeat();
 
+  StateServices stateServices = StateServices();
+
   @override
   void dispose() {
     super.dispose();
@@ -31,8 +33,6 @@ class _WorldStatesViewState extends State<WorldStatesView>
 
   @override
   Widget build(BuildContext context) {
-    StateServices stateServices = StateServices();
-
     return Scaffold(
       body: SafeArea(
           child: Padding(
@@ -46,7 +46,7 @@ class _WorldStatesViewState extends State<WorldStatesView>
                 future: stateServices.getWorldStatesRecord(),
                 builder: (BuildContext context,
                     AsyncSnapshot<WorldStatesModel> snapshot) {
-                  if (!snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return Expanded(
                       flex: 1,
                       child: SpinKitFadingCircle(
@@ -55,46 +55,85 @@ class _WorldStatesViewState extends State<WorldStatesView>
                         size: 50,
                       ),
                     );
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Center(
+                      child: Text(snapshot.error.toString()),
+                    );
+                  } else if (snapshot.data == null) {
+                    return const Center(
+                      child: Text('Data is null'),
+                    );
                   } else {
-                    return Column(
-                      children: [
-                        PieChart(
-                          dataMap: const {
-                            'Total': 20,
-                            'Recoverd': 15,
-                            'Deaths': 5
-                          },
-                          animationDuration: const Duration(milliseconds: 1200),
-                          chartType: ChartType.ring,
-                          colorList: colorList,
-                          chartRadius: MediaQuery.of(context).size.width / 3.2,
-                          legendOptions: const LegendOptions(
-                              legendPosition: LegendPosition.left),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.06),
-                          child: Card(
-                            child: Column(
-                              children: [
-                                ReusableRow(title: 'Total', value: '200'),
-                                ReusableRow(title: 'Total', value: '200'),
-                                ReusableRow(title: 'Total', value: '200'),
-                              ],
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          PieChart(
+                            dataMap: {
+                              'Total':
+                                  double.parse(snapshot.data!.cases.toString()),
+                              'Recoverd': double.parse(
+                                  snapshot.data!.recovered.toString()),
+                              'Deaths': double.parse(
+                                  snapshot.data!.deaths.toString()),
+                            },
+                            animationDuration:
+                                const Duration(milliseconds: 1200),
+                            chartType: ChartType.ring,
+                            colorList: colorList,
+                            chartRadius:
+                                MediaQuery.of(context).size.width / 3.2,
+                            legendOptions: const LegendOptions(
+                                legendPosition: LegendPosition.left),
+                            chartValuesOptions: const ChartValuesOptions(
+                                showChartValuesInPercentage: true),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.height * 0.06),
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  ReusableRow(
+                                      title: 'Total',
+                                      value: snapshot.data!.cases.toString()),
+                                  ReusableRow(
+                                      title: 'Recovered',
+                                      value:
+                                          snapshot.data!.recovered.toString()),
+                                  ReusableRow(
+                                      title: 'Deaths',
+                                      value: snapshot.data!.deaths.toString()),
+                                  ReusableRow(
+                                      title: 'Active',
+                                      value: snapshot.data!.active.toString()),
+                                  ReusableRow(
+                                      title: 'Critical',
+                                      value:
+                                          snapshot.data!.critical.toString()),
+                                  ReusableRow(
+                                      title: 'Affected Countries',
+                                      value: snapshot.data!.affectedCountries
+                                          .toString()),
+                                  ReusableRow(
+                                      title: 'Tests',
+                                      value: snapshot.data!.tests.toString()),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              color: const Color(0xff1aa260),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Center(
-                            child: Text('Track Countries'),
-                          ),
-                        )
-                      ],
+                          Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                                color: const Color(0xff1aa260),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: const Center(
+                              child: Text('Track Countries'),
+                            ),
+                          )
+                        ],
+                      ),
                     );
                   }
                 }),
