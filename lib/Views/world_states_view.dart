@@ -1,5 +1,6 @@
 import 'package:covid_tracker/Models/world_states_model.dart';
 import 'package:covid_tracker/Services/state_services.dart';
+import 'package:covid_tracker/Views/countries_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -56,7 +57,6 @@ class _WorldStatesViewState extends State<WorldStatesView>
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    print(snapshot.error);
                     return Center(
                       child: Text(snapshot.error.toString()),
                     );
@@ -123,13 +123,22 @@ class _WorldStatesViewState extends State<WorldStatesView>
                               ),
                             ),
                           ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                                color: const Color(0xff1aa260),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: const Center(
-                              child: Text('Track Countries'),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CountriesListView()));
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff1aa260),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: const Center(
+                                child: Text('Track Countries'),
+                              ),
                             ),
                           )
                         ],
