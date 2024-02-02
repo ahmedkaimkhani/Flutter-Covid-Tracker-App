@@ -1,6 +1,7 @@
 import 'package:covid_tracker/Models/world_states_model.dart';
 import 'package:covid_tracker/Services/state_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class WorldStatesView extends StatefulWidget {
@@ -46,44 +47,57 @@ class _WorldStatesViewState extends State<WorldStatesView>
                 builder: (BuildContext context,
                     AsyncSnapshot<WorldStatesModel> snapshot) {
                   if (!snapshot.hasData) {
-                    return const Expanded(
+                    return Expanded(
                       flex: 1,
-                      child: Column(),
+                      child: SpinKitFadingCircle(
+                        color: Colors.white,
+                        controller: _animationController,
+                        size: 50,
+                      ),
                     );
-                  } else {}
-                  return Column();
+                  } else {
+                    return Column(
+                      children: [
+                        PieChart(
+                          dataMap: const {
+                            'Total': 20,
+                            'Recoverd': 15,
+                            'Deaths': 5
+                          },
+                          animationDuration: const Duration(milliseconds: 1200),
+                          chartType: ChartType.ring,
+                          colorList: colorList,
+                          chartRadius: MediaQuery.of(context).size.width / 3.2,
+                          legendOptions: const LegendOptions(
+                              legendPosition: LegendPosition.left),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.06),
+                          child: Card(
+                            child: Column(
+                              children: [
+                                ReusableRow(title: 'Total', value: '200'),
+                                ReusableRow(title: 'Total', value: '200'),
+                                ReusableRow(title: 'Total', value: '200'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                              color: const Color(0xff1aa260),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text('Track Countries'),
+                          ),
+                        )
+                      ],
+                    );
+                  }
                 }),
-            PieChart(
-              dataMap: const {'Total': 20, 'Recoverd': 15, 'Deaths': 5},
-              animationDuration: const Duration(milliseconds: 1200),
-              chartType: ChartType.ring,
-              colorList: colorList,
-              chartRadius: MediaQuery.of(context).size.width / 3.2,
-              legendOptions:
-                  const LegendOptions(legendPosition: LegendPosition.left),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.06),
-              child: Card(
-                child: Column(
-                  children: [
-                    ReusableRow(title: 'Total', value: '200'),
-                    ReusableRow(title: 'Total', value: '200'),
-                    ReusableRow(title: 'Total', value: '200'),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-                  color: const Color(0xff1aa260),
-                  borderRadius: BorderRadius.circular(10)),
-              child: const Center(
-                child: Text('Track Countries'),
-              ),
-            )
           ],
         ),
       )),
