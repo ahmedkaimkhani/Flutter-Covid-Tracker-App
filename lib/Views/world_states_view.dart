@@ -57,6 +57,7 @@ class _WorldStatesViewState extends State<WorldStatesView>
                       ),
                     );
                   } else if (snapshot.hasError) {
+                    print(snapshot.error);
                     return Center(
                       child: Text(snapshot.error.toString()),
                     );
