@@ -70,6 +70,7 @@ class _CountriesListViewState extends State<CountriesListView> {
                       child: Text(snapshot.error.toString()),
                     );
                   } else {
+                    print("${snapshot.data}");
                     return ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
