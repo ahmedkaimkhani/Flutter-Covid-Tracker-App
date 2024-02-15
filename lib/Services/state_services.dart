@@ -21,7 +21,6 @@ class StateServices {
     final response = await http.get(Uri.parse(AppUrl.countriesListApi));
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
-      print(data);
       return data;
     } else {
       throw Exception('Error');

@@ -1,4 +1,5 @@
 import 'package:covid_tracker/Services/state_services.dart';
+import 'package:covid_tracker/Views/detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -27,6 +28,9 @@ class _CountriesListViewState extends State<CountriesListView> {
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 controller: searchController,
+                onChanged: (value) {
+                  setState(() {});
+                },
                 decoration: InputDecoration(
                     hintText: 'Search with country name',
                     contentPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -74,23 +78,90 @@ class _CountriesListViewState extends State<CountriesListView> {
                       return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  title: Text(snapshot.data![index]['country']),
-                                  subtitle: Text(snapshot.data![index]
-                                          ['infected']
-                                      .toString()),
-                                  leading: Image(
-                                    height: 50,
-                                    width: 50,
-                                    image: NetworkImage(snapshot.data![index]
-                                            ['flag']
-                                        .toString()),
+                            String name = snapshot.data![index]['country'];
+
+                            if (searchController.text.isEmpty) {
+                              return Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailView(
+                                            name: snapshot.data![index]
+                                                ['country'],
+                                            image: snapshot.data![index]
+                                                ['flag'],
+                                            totalCases: snapshot.data![index]
+                                                ['infected'],
+                                            tested: snapshot.data![index]
+                                                ['tested'],
+                                            recovered: snapshot.data![index]
+                                                ['recovered'],
+                                            deceased: snapshot.data![index]
+                                                ['deceased'],
+                                          ),
+                                        )),
+                                    child: ListTile(
+                                      title: Text(
+                                          snapshot.data![index]['country']),
+                                      subtitle: Text(snapshot.data![index]
+                                              ['infected']
+                                          .toString()),
+                                      leading: Image(
+                                        height: 50,
+                                        width: 50,
+                                        image: NetworkImage(snapshot
+                                            .data![index]['flag']
+                                            .toString()),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
+                                ],
+                              );
+                            } else if (name.toLowerCase().contains(
+                                searchController.text.toLowerCase())) {
+                              return Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailView(
+                                            name: snapshot.data![index]
+                                                ['country'],
+                                            image: snapshot.data![index]
+                                                ['flag'],
+                                            totalCases: snapshot.data![index]
+                                                ['infected'],
+                                            tested: snapshot.data![index]
+                                                ['tested'],
+                                            recovered: snapshot.data![index]
+                                                ['recovered'],
+                                            deceased: snapshot.data![index]
+                                                ['deceased'],
+                                          ),
+                                        )),
+                                    child: ListTile(
+                                      title: Text(
+                                          snapshot.data![index]['country']),
+                                      subtitle: Text(snapshot.data![index]
+                                              ['infected']
+                                          .toString()),
+                                      leading: Image(
+                                        height: 50,
+                                        width: 50,
+                                        image: NetworkImage(snapshot
+                                            .data![index]['flag']
+                                            .toString()),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Container();
+                            }
                           });
                     }
                   }),
