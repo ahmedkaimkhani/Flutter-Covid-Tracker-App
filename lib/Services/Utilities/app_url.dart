@@ -1,7 +1,7 @@
 class AppUrl {
   static const worldStatesApi =
-      'https://webhook.site/5a6bf385-f69e-4365-8ce0-5b2520f26fce';
+      'https://webhook.site/07f4e11e-372f-49b3-b87c-028727f093df';
 
   static const countriesListApi =
-      'https://webhook.site/2dcfc083-0c8e-47dc-b232-ea9f9f73c855';
+      'https://webhook.site/5d4d2303-725c-45e3-9472-783393400ae6';
 }
